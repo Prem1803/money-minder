@@ -2,6 +2,9 @@ const express = require("express");
 const User = require("../models/user");
 const { validateEmail } = require("../utils");
 const UserRouter = new express.Router();
+UserRouter.get("/", (req, res) => {
+  res.send("Welcome to money minder");
+});
 UserRouter.post("/user/signup", async (req, res) => {
   try {
     if (!req.body.name || !req.body.email) {
