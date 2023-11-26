@@ -26,6 +26,7 @@ UserRouter.post("/user/signup", async (req, res) => {
     const token = await user.generateAuthToken();
     res.send({
       token: token,
+      user
     });
   } catch (e) {
     console.log(e);
@@ -45,6 +46,7 @@ UserRouter.post("/user/login", async (req, res) => {
     const token = await user.generateAuthToken();
     res.send({
       token: token,
+      user
     });
   } catch (e) {
     res.status(400).send({ error: e.message });
