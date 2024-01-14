@@ -38,10 +38,17 @@ TransactionRouter.post("/transaction/add", auth, async (req, res) => {
 TransactionRouter.get("/transactions", auth, async (req, res) => {
   try {
     const userId = req.user._id;
-    let transactions = await Transaction.find({ userId }).sort({
-      date: -1,
-      amount: -1,
-    });
+    let transactions = await Transaction.aggregate([
+      { $match: { userId } },
+      { $sort: { date: -1, amount: -1 } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+          transactions: { $push: "$$ROOT" },
+        },
+      },
+      { $project: { _id: 0, date: "$_id", transactions: 1 } },
+    ]);
     res.status(200).send({ transactions });
   } catch (error) {
     res.status(400).send({ error: error.message });
